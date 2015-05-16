@@ -16,10 +16,11 @@ function checkIfCommandExist {
 function getOSVersion {
   if [ -f "/etc/os-release" ]; then
     ##It is likely Ubuntu
-    osname=`cat /etc/os-release | grep ID= | head -1`
-    osname=${osname:3}
-    osversion=`cat /etc/os-release | grep VERSION_ID= | head -1`
+    osname=`cat /etc/os-release | grep ID= | head -1 | sed 's/\"//g'`
+    osname=${osname:3}                                 
+    osversion=`cat /etc/os-release | grep VERSION_ID= | head -1 |  sed 's/\"//g'`
     osversion=${osversion:11}
+    osname=$osname$osversion
     return
   fi
 
@@ -42,6 +43,17 @@ function getOSVersion {
     echo "Sorry my script only supports CentOS, Ubuntu and Fedora"
     exit
   fi
+
+  #  Ubuntu
+  ubuntu_Cmd=`lsb_release -a`
+  if [ "${ubuntu_Cmd}" != "" ] ;then
+    ID=`"${ubuntu_Cmd}"|grep ID| awk '{print $3}'`
+    Release=`lsb_release -a|grep Release| awk '{print $2}'`
+    osname="$ID"
+    echo -n "$osname"
+  else
+    echo -n ""
+  fi
 }
 
 function install {
@@ -50,8 +62,8 @@ function install {
       exit
   fi
   case "$osname" in
-  ubuntu)
-    apt-get install $1
+  Ubuntu)
+    apt-get install  $1
     ;;
   centos6)
     yum -y install $1
@@ -86,11 +98,17 @@ if [ -z "$1" ]
 then
   echo 'Get iojs version from https://iojs.org'
   #Extract latest version iojs from iojs.org
-  temp=`curl -silent https://iojs.org/en/index.html | grep -m 1 https://iojs.org/dist/`
-  temp=${temp#*dist/v}
-  temp=${temp%*class*}
-  iojsversion=${temp%*\/*}
+  temp=`curl -sL https://iojs.org/en/index.html |
+  grep -Eoi '<a [^>]+>' | 
+  grep https://iojs.org/dist/ | 
+  awk '{print $2}' | 
+  awk -F"/"  '{print $5}' | 
+  head -1 |
+  sed 's/^.//'`
+   iojsversion=${temp}
   echo $iojsversion
+
+  echo "$temp"
 else
   iojsversion=$1
 fi
@@ -133,17 +151,17 @@ tar -xzf ${iojsfile}
 
 if [ -d "iojs-v${iojsversion}-linux-x64" ]
 then
-	echo "Extract to folder iojs-v${iojsversion}-linux-x64 successfully"
+  echo "Extract to folder iojs-v${iojsversion}-linux-x64 successfully"
 else
-	echo "Extract failed"
-	exit
+  echo "Extract failed"
+  exit
 fi
 
 echo "Move iojs-v${iojsversion} to /opt folder"
 # if in /opt folder there is already iojs folder, then remove it
 if [ -d "/opt/iojs-v${iojsversion}" ]
 then
-	rm -rf /opt/iojs-v${iojsversion}
+  rm -rf /opt/iojs-v${iojsversion}
 fi
 
 mv iojs-v${iojsversion}-linux-x64 /opt/iojs-v${iojsversion}
