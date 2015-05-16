@@ -62,7 +62,7 @@ function install {
       exit
   fi
   case "$osname" in
-  ubuntu)
+  Ubuntu)
     apt-get install  $1
     ;;
   centos6)
