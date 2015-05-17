@@ -1,5 +1,5 @@
 # iojsinstaller
-Automatically install iojs in Linux. Currently this script is tested on Ubuntu 12 or later, CentOS 6 or later.
+Automatically install iojs in Linux. Currently this script is tested on Ubuntu 12 or later, Ubuntu distros, CentOS 6 or later, RedHat, Debian
 
 There are two otions:
 
@@ -20,3 +20,5 @@ Installation steps:
 
 To remove iojs installation
 `sudo ./remove_iojs.sh`
+
+If you encounter bug, feel free to email to me cuong[at]techmaster[dot]vn
