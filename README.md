@@ -1,5 +1,5 @@
 # iojsinstaller
-Automatically install iojs in Linux. Currently this script is tested on Ubuntu 12 or later, Ubuntu distros, CentOS 6 or later, RedHat, Debian
+Automatically install iojs in Linux. Currently this script is tested on Ubuntu 12 or later, Ubuntu distros, CentOS 6 or later, RedHat, Debian, LinudMint LMDE2
 
 There are two otions:
 

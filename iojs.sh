@@ -66,6 +66,9 @@ function install {
   debian)
     apt-get -q -y install $1
     ;;
+  linuxmint)
+    apt-get -q -y install $1
+    ;;
   centos)
     yum -y install $1
     ;;
@@ -105,7 +108,8 @@ then
   #sed 's/^.//'`
   # iojsversion=${temp}
   #echo $iojsversion
-  iojsversion=`curl -sL https://iojs.org/en/index.html | sed -nre 's/.*v(([0-9]+\.)*[0-9]+).*/\1/p' | head -1`
+  #iojsversion=`curl -sL https://iojs.org/en/index.html | sed -nre 's/.*v(([0-9]+\.)*[0-9]+).*/\1/p' | head -1`
+  iojsversion=`curl -sL https://iojs.org/en/index.html | sed -nre 's/.*\/v([0-9]*\.[0-9]*\.[0-9]*)\/.*/\1/p' | head -1`
 else
   iojsversion=$1
 fi
