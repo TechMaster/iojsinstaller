@@ -15,12 +15,10 @@ function checkIfCommandExist {
 # Detect Linux name and version.
 function getOSVersion {
   if [ -f "/etc/os-release" ]; then
-    ##It is likely Ubuntu
-    osname=`cat /etc/os-release | grep ID= | head -1 | sed 's/\"//g'`
-    osname=${osname:3}                                 
-    osversion=`cat /etc/os-release | grep VERSION_ID= | head -1 |  sed 's/\"//g'`
-    osversion=${osversion:11}
-    osname=$osname$osversion
+    ##Ubuntu, Debian, Lubuntu...
+    osname=`cat /etc/os-release | sed -n 's/^ID=// p'`
+    osversion=`cat /etc/os-release | sed -n -r 's/^VERSION_ID="(.*)"$/\1/ p'`
+    osname=$osname
     return
   fi
 
@@ -30,30 +28,30 @@ function getOSVersion {
     if [[ $sysrelease == CentOS* ]]; then        
       ##https://www.centos.org/forums/viewtopic.php?t=488
       osversion=`rpm -q --qf "%{VERSION}" $(rpm -q --whatprovides redhat-release)`
-      osname="centos$osversion"      
+      osname="centos"      
       return
     fi
     ## Fedora
     if [[ $sysrelease == Fedora* ]]; then
       osversion=`rpm -q --qf "%{VERSION}" fedora-release`
-      osname="fedora$osversion"
+      osname="fedora"
       return
     fi
   else
-    echo "Sorry my script only supports CentOS, Ubuntu and Fedora"
+    echo "Sorry my script only supports CentOS, Ubuntu, Debian and Fedora"
     exit
   fi
 
-  #  Ubuntu
-  ubuntu_Cmd=`lsb_release -a`
-  if [ "${ubuntu_Cmd}" != "" ] ;then
-    ID=`"${ubuntu_Cmd}"|grep ID| awk '{print $3}'`
-    Release=`lsb_release -a|grep Release| awk '{print $2}'`
-    osname="$ID"
-    echo -n "$osname"
-  else
-    echo -n ""
-  fi
+  #  Ubuntu. Chu viet cai gi the nay?
+  #ubuntu_Cmd=`lsb_release -a`
+  #if [ "${ubuntu_Cmd}" != "" ] ;then
+  #  ID=`"${ubuntu_Cmd}"|grep ID| awk '{print $3}'`
+  #  Release=`lsb_release -a|grep Release| awk '{print $2}'`
+  #  osname="$ID"
+  #  echo -n "$osname"
+  #else
+  #  echo -n ""
+  #fi
 }
 
 function install {
@@ -62,13 +60,13 @@ function install {
       exit
   fi
   case "$osname" in
-  Ubuntu)
-    apt-get install  $1
+  ubuntu)
+    apt-get -q -y install  $1
     ;;
-  centos6)
-    yum -y install $1
+  debian)
+    apt-get -q -y install $1
     ;;
-  centos7)
+  centos)
     yum -y install $1
     ;;
   fedora)
@@ -87,7 +85,7 @@ fi
 
 echo "Download and install iojs"
 getOSVersion
-
+echo "OS: $osname"
 # install curl if it does not exist
 if [ $(checkIfCommandExist curl) -eq 0 ]; then
    install curl
@@ -107,8 +105,6 @@ then
   sed 's/^.//'`
    iojsversion=${temp}
   echo $iojsversion
-
-  echo "$temp"
 else
   iojsversion=$1
 fi
