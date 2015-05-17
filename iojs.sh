@@ -96,15 +96,16 @@ if [ -z "$1" ]
 then
   echo 'Get iojs version from https://iojs.org'
   #Extract latest version iojs from iojs.org
-  temp=`curl -sL https://iojs.org/en/index.html |
-  grep -Eoi '<a [^>]+>' | 
-  grep https://iojs.org/dist/ | 
-  awk '{print $2}' | 
-  awk -F"/"  '{print $5}' | 
-  head -1 |
-  sed 's/^.//'`
-   iojsversion=${temp}
-  echo $iojsversion
+  #temp=`curl -sL https://iojs.org/en/index.html |
+  #grep -Eoi '<a [^>]+>' | 
+  #grep https://iojs.org/dist/ | 
+  #awk '{print $2}' | 
+  #awk -F"/"  '{print $5}' | 
+  #head -1 |
+  #sed 's/^.//'`
+  # iojsversion=${temp}
+  #echo $iojsversion
+  iojsversion=`curl -sL https://iojs.org/en/index.html | sed -nre 's/.*v(([0-9]+\.)*[0-9]+).*/\1/p' | head -1`
 else
   iojsversion=$1
 fi
