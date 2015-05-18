@@ -13,12 +13,12 @@ function checkIfCommandExist {
 }
 
 # Detect Linux name and version.
+# Return osname and osversion
 function getOSVersion {
   if [ -f "/etc/os-release" ]; then
     ##Ubuntu, Debian, Lubuntu...
     osname=`cat /etc/os-release | sed -n 's/^ID=// p'`
     osversion=`cat /etc/os-release | sed -n -r 's/^VERSION_ID="(.*)"$/\1/ p'`
-    osname=$osname
     return
   fi
 
@@ -41,17 +41,6 @@ function getOSVersion {
     echo "Sorry my script only supports CentOS, Ubuntu, Debian and Fedora"
     exit
   fi
-
-  #  Ubuntu. Chu viet cai gi the nay?
-  #ubuntu_Cmd=`lsb_release -a`
-  #if [ "${ubuntu_Cmd}" != "" ] ;then
-  #  ID=`"${ubuntu_Cmd}"|grep ID| awk '{print $3}'`
-  #  Release=`lsb_release -a|grep Release| awk '{print $2}'`
-  #  osname="$ID"
-  #  echo -n "$osname"
-  #else
-  #  echo -n ""
-  #fi
 }
 
 function install {
@@ -98,17 +87,6 @@ fi
 if [ -z "$1" ]
 then
   echo 'Get iojs version from https://iojs.org'
-  #Extract latest version iojs from iojs.org
-  #temp=`curl -sL https://iojs.org/en/index.html |
-  #grep -Eoi '<a [^>]+>' | 
-  #grep https://iojs.org/dist/ | 
-  #awk '{print $2}' | 
-  #awk -F"/"  '{print $5}' | 
-  #head -1 |
-  #sed 's/^.//'`
-  # iojsversion=${temp}
-  #echo $iojsversion
-  #iojsversion=`curl -sL https://iojs.org/en/index.html | sed -nre 's/.*v(([0-9]+\.)*[0-9]+).*/\1/p' | head -1`
   iojsversion=`curl -sL https://iojs.org/en/index.html | sed -nre 's/.*\/v([0-9]*\.[0-9]*\.[0-9]*)\/.*/\1/p' | head -1`
 else
   iojsversion=$1
