@@ -18,7 +18,11 @@ Installation steps:
 	* `iojs -v`
 	* `npm -v`
 
+Quick installation: just copy below line to Terminal and enter
+`git clone https://github.com/TechMaster/iojsinstaller.git;cd iojsinstaller;sudo ./iojs.sh`
+
 To remove iojs installation
 `sudo ./remove_iojs.sh`
+
 
 If you encounter bug, feel free to email to me cuong[at]techmaster[dot]vn
